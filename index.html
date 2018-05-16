@@ -2,160 +2,45 @@
 <html>
 
 <head>
-
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="index.css">
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, user-scalable=no,
 		shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-
-	<title>Basic Template App</title>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="./libs/jquery/jquery.js" type="text/javascript"> </script>
+	<script src="libs/evothings/evothings.js"></script>
+	<script src="libs/evothings/ui/ui.js"></script>
+	<script src="index.js" type="text/javascript"></script>
 
 	<style>
 		@import 'ui/css/evothings-app.css';
 	</style>
-	<script src="./libs/jquery/jquery.js" type="text/javascript"> </script>
-	<script>
-	//if (window.hyper && window.hyper.log) { console.log = hyper.log }
-	</script>
 
 </head>
 
-<body ontouchstart=""><!-- ontouchstart="" enables low-delay CSS transitions. -->
-
-	<header>
-		<button class="back" onclick="history.back()">
-			<img src="ui/images/arrow-left.svg" />
-		</button>
-
-		<img class="logotype" src="ui/images/logo.svg" alt="Evothings" />
-
-		<!--<button class="menu" onclick=""><img src="ui/images/menu.svg" /></button>-->
-	</header>
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-	<script>
 
 
 
-// Create an empty sensor object as a global
-var office = {};
-var recreational = {}
-recreational.data = "";
-office.data = "";
-var recreationalSensorKey = 'dPjyGN0bx0IDgO000D4lI6leJGK';
-var officeSensorKey = 'GqXO9z3ae9tODKPPPO2YHxw39By'
 
-// A subscriber's key (other keys are available at http://80.69.174.27:8080/streams/)
-var sensorURL = 'http://80.69.174.27:8080/output/';
+<div class="row">
+  <div class="col-md-12 text-center">
+    <h1>Use the buttons to retrieve the data you wish to view</h1>
+		<button onClick="getData(0);">Pressure</button>
+		<button onClick="getData(1);">Temperature</button>
+		<button onClick="getData(2);">Lumination</button>
+		<button onClick="getData(3);">Carbon dioxide</button>
 
-// A bitmap image describing where the sensor is located
-//sensor.image = "https://evothings.com/demos/dome_pics/IMG_1758.JPG";
+  </div>
+  <div class="col-md-4 col-md-offset-4">
+    <hr />
+  </div>
+  <div class="clearfix"></div>
+  <div class="col-md-6">
+    <div id="chart_div" class="chart"></div>
+  </div>
 
-var headers = ['barometric pressure (Pa)', 'temperature (°C)', 'lumination (lux)', 'carbon dioxide (ppm)']
-var varNames = ['p', 't', 'l', 'c'];
-
-function drawChart(recreationalData, officeData) {
-			 console.log("DRAWCHART")
-			 var variable = varNames[0];
-
-			 var lines = [];
-
-			 lines.push(['date', 'value'])
-			recreationalData.forEach(function(row) {
-				console.log(row);
-				lines.push([new Date(Date.parse(row.timestamp)), parseFloat(row.p)])
-				console.log("row added");
-			})
-			console.log(lines);
-			var data = google.visualization.arrayToDataTable(lines);
-
-
-
-//			officeData.forEach(function(row) {
-	//			data.addRow([new Date(Date.parse(row.timestamp)), null, parseFloat(row.variable)])
-		//		console.log("row added");
-		//	})
-
-			 var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-
-			 var options = {
-				 interpolateNulls: true,
-				 width: 900,
-        height: 500
-			 };
-
-			 chart.draw(data, options);
-		 }
-
-// Function to retrieve data, placing it in a "response" object
-function getJSON(key, area)
-    {
-    if (window.cordova)
-        {
-            console.log('Using Apache Cordova HTTP GET function');
-            cordovaHTTP.get(
-                sensorURL + key + '.json?gt[timestamp]=now-1day&page=1',
-                function (response)
-                    {
-                        if (response)
-                            {
-                                area.data = response;
-                            }
-                    },
-                function (error)
-                    {
-                    console.log(JSON.stringify(error));
-                    });
-        }
-    else
-        {
-            console.log('Not using Cordova, fallback to AJAX via jquery');
-            $.ajax({
-                    url: sensorURL + key + ".json?gt[timestamp]=now-1day",
-                    jsonp: "callback",
-                    cache: true,
-                    dataType: "jsonp",
-                    data:
-                        {
-                            page: 1
-                        },
-                    success: function(response)
-                        {
-                            if (response && response[0])
-                                {
-
-																	    area.data = response;
-
-                                }
-                        }
-                });
-        }
-}
-
-getJSON(recreationalSensorKey, recreational);
-getJSON(officeSensorKey, office);
-
-google.charts.load('current', {'packages':['annotationchart']});
-google.charts.setOnLoadCallback(function () {
-	console.log("on callback")
-	console.log(recreational.data);
-  drawChart(recreational.data, office.data);
-});
-</script>
-
-
-<script type='text/javascript'>
-
-	</script>
-
-
-<button onClick="getJSON();">Click to recieve sensor data</button>
-
-<div id='chart_div' style='width: 900px; height: 500px;'></div>
-
-	<script src="cordova.js"></script>
-	<script src="libs/evothings/evothings.js"></script>
-	<script src="libs/evothings/ui/ui.js"></script>
-	<!-- TODO: Add libraries that you need -->
+</div>
 
 </body>
 
